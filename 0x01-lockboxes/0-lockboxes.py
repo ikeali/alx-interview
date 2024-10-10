@@ -1,16 +1,35 @@
+#!/usr/bin/python3
+
 def canUnlockAll(boxes):
-    '''Checks if all the boxes in a list of boxes containing the keys
-    (indices) to other boxes can be unlocked given that the first
-    box is unlocked.
-    '''
-    n = len(boxes)
-    seen_boxes = set([0])
-    unseen_boxes = set(boxes[0]).difference(set([0]))
-    while len(unseen_boxes) > 0:
-        boxIdx = unseen_boxes.pop()
-        if not boxIdx or boxIdx >= n or boxIdx < 0:
-            continue
-        if boxIdx not in seen_boxes:
-            unseen_boxes = unseen_boxes.union(boxes[boxIdx])
-            seen_boxes.add(boxIdx)
-    return n == len(seen_boxes)
+    """
+    Determines if all boxes can be opened.
+    
+    Parameters:
+    boxes (list of list of int): A list of lists where each list contains keys
+                                  to open other boxes.
+    
+    Returns:
+    bool: True if all boxes can be opened, False otherwise.
+    """
+    if not boxes:  # If there are no boxes, return True
+        return True
+    
+    num_boxes = len(boxes)
+    unlocked = [False] * num_boxes  # Track unlocked boxes
+    unlocked[0] = True  # The first box is unlocked
+    keys = boxes[0]  # Start with the keys in the first box
+    open_count = 1  # Count of opened boxes
+    
+    while keys:
+        new_keys = []  # Store new keys found in this iteration
+        for key in keys:
+            if key < num_boxes and not unlocked[key]:  # Check if the box can be unlocked
+                unlocked[key] = True  # Unlock the box
+                open_count += 1  # Increment opened box count
+                new_keys.extend(boxes[key])  # Collect new keys from the unlocked box
+        
+        keys = new_keys  # Update keys to explore the new keys found
+        
+    return open_count == num_boxes  # Check if all boxes are opened
+
+
